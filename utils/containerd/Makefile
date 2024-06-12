@@ -1,15 +1,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=containerd
-PKG_VERSION:=1.4.6
+PKG_VERSION:=1.7.15
 PKG_RELEASE:=1
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/containerd/containerd/tar.gz/v${PKG_VERSION}?
-PKG_HASH:=285a3f4c00a87538bd7d0a82a0a8a758458c02b925349f44f3189f480c326038
-PKG_SOURCE_VERSION:=d71fcd7d8303cbf684402823e425e9dd2e99285d
+PKG_HASH:=2dc491434b182334b51350f810ed68ace3624c8a2d6e1eac490d93c653498a33
 
 PKG_MAINTAINER:=Gerard Ryan <G.M0N3Y.2503@gmail.com>
 
@@ -36,13 +35,17 @@ define Package/containerd/description
 An industry-standard container runtime with an emphasis on simplicity, robustness and portability
 endef
 
-GO_PKG_BUILD_VARS += GO111MODULE=auto
-GO_PKG_INSTALL_ALL:=1
+GO_PKG_INSTALL_EXTRA:=\
+	vendor/google.golang.org/protobuf/internal/editiondefaults/editions_defaults.binpb \
+	Makefile \
+	vendor/modules.txt
+
 MAKE_PATH:=$(GO_PKG_WORK_DIR_NAME)/build/src/$(GO_PKG)
 MAKE_VARS += $(GO_PKG_VARS)
 MAKE_FLAGS += \
 	VERSION=$(PKG_VERSION) \
-	REVISION=$(PKG_SOURCE_VERSION)
+	REVISION=$(PKG_SOURCE_VERSION) \
+	PREFIX=""
 
 ifeq ($(CONFIG_SELINUX),y)
 MAKE_FLAGS += BUILDTAGS='selinux'
